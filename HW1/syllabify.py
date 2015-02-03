@@ -122,8 +122,8 @@ for line in file:
   print line.split()[0] + " " + syllabified_line
   syllables_dict = update_syllables_dict(syllables_dict, syllabified_line)
 
-# print "\n"
-# print "Syllable type frequencies:"
-# total = sum(syllables_dict.values())
-# for pattern, num in syllables_dict.items():
-#   print "{0:20} {1:>10.2f}".format("Frequency of " + pattern + " :", (num * 100.0 / total))
+print "\n"
+print "Syllable type frequencies:"
+total = sum(syllables_dict.values())
+for pattern, num in syllables_dict.items():
+  print "{0:20} {1:>10.2f}".format("Frequency of " + pattern + " :", (num * 100.0 / total))
