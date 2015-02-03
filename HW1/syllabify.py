@@ -88,6 +88,20 @@ def syllabify(phons):
 
   return string_from_syllables(phons, syllables[::-1])
 
+def update_syllables_dict(dict, line):
+  for syllable in line.split(" + "):
+    pattern = ""
+    for phon in syllable.split():
+      if son[phon] > 3:
+        pattern += "C"
+      else:
+        pattern += "V"
+    if pattern in dict:
+      dict[pattern] += 1
+    else:
+      dict[pattern] = 1
+  return dict
+
 # Store first command line arg as filename
 try:
   filename = sys.argv[1]
@@ -98,7 +112,18 @@ except IndexError:
 # Open file for reading
 file = open(filename, 'r')
 
+# Syllables dictionary
+syllables_dict = {}
+
 # For each line in lines
 for line in file:
   phons = line.split()[1:] # Return all but first el in list
-  print line.split()[0] + " " + syllabify(phons)
+  syllabified_line = syllabify(phons)
+  print line.split()[0] + " " + syllabified_line
+  syllables_dict = update_syllables_dict(syllables_dict, syllabified_line)
+
+# print "\n"
+# print "Syllable type frequencies:"
+# total = sum(syllables_dict.values())
+# for pattern, num in syllables_dict.items():
+#   print "{0:20} {1:>10.2f}".format("Frequency of " + pattern + " :", (num * 100.0 / total))
