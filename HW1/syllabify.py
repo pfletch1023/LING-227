@@ -80,7 +80,10 @@ def syllabify(phons):
 
       # Onset Maximization => ONSET
       elif syllables[i - 1] == ONSET and son_diff >= 2:
-        syllables[i] = ONSET
+
+        # Do not group "D L" as onsets
+        if not (last == "L" and phon == "D"):
+          syllables[i] = ONSET
 
       # S => ONSET
       elif phon == "S":
@@ -93,9 +96,9 @@ def update_syllables_dict(dict, line):
     pattern = ""
     for phon in syllable.split():
       if son[phon] > 3:
-        pattern += "C"
-      else:
         pattern += "V"
+      else:
+        pattern += "C"
     if pattern in dict:
       dict[pattern] += 1
     else:
@@ -119,11 +122,13 @@ syllables_dict = {}
 for line in file:
   phons = line.split()[1:] # Return all but first el in list
   syllabified_line = syllabify(phons)
-  print line.split()[0] + " " + syllabified_line
+  # print line.split()[0] + " " + syllabified_line
   syllables_dict = update_syllables_dict(syllables_dict, syllabified_line)
 
+# Print list of syllable patterns sorted by frequency
 print "\n"
 print "Syllable type frequencies:"
 total = sum(syllables_dict.values())
-for pattern, num in syllables_dict.items():
+sorted_syll_dict = sorted(syllables_dict.items(), key=lambda x: -x[1])
+for pattern, num in sorted_syll_dict:
   print "{0:20} {1:>10.2f}".format("Frequency of " + pattern + " :", (num * 100.0 / total))
